@@ -1,14 +1,192 @@
 # Kalz OmniSuite
 
-Kalz OmniSuite adalah blueprint dan foundation untuk aplikasi desktop native Linux berbasis Python, PySide6/QML/QSS. Fokusnya adalah otomasi workstation yang dapat diaudit: deteksi distro dan desktop environment, tool registry, konfigurasi, backup, scheduling, reporting, dan integrasi KDE Plasma, XFCE, GNOME, serta fallback generic.
+![Kalz OmniSuite architecture](docs/diagrams/system-architecture.svg)
 
-## Prinsip operasi
+**Kalz OmniSuite** adalah platform operasi Linux native berbasis Python dengan PySide6/QML/QSS, CLI headless, automation engine, distributed processing, OpenAI Agent integration, observability real-time, API gateway, load balancing, dan layered defense.
+
+> **Operational promise:** preview-first, consent-gated, auditable, scope-aware, dan fail-closed untuk operasi yang berisiko.
+
+## Visual System Overview
+
+![Deployment control loop](docs/diagrams/deployment-run.svg)
+
+Diagram di atas menggambarkan alur aktual deployment: `plan` tidak memutasi host, `test` memblokir release yang gagal, `apply` memerlukan approval eksplisit, `verify` memeriksa health dan audit, sedangkan `rollback` mengembalikan release pointer sebelumnya.
+
+Source diagram yang dapat diedit tersedia di [`docs/diagrams/system-architecture.d2`](docs/diagrams/system-architecture.d2). Dokumentasi lengkap tersedia di [`docs/README.md`](docs/README.md).
+
+## Instalasi Langkah demi Langkah
+
+### 1. Persiapkan Linux
+
+Kalz ditujukan untuk Linux modern dengan Python 3.11 atau yang lebih baru. Pastikan `git`, `python3`, dan `python3-venv` tersedia.
+
+```bash
+sudo apt update
+sudo apt install -y git python3 python3-venv python3-pip
+python3 --version
+```
+
+Untuk distro berbasis RPM, gunakan paket ekuivalen `python3`, `python3-pip`, dan `python3-virtualenv`.
+
+### 2. Clone repository
+
+```bash
+git clone https://github.com/chikalgaming213-eng/kalz-omnisiute.git
+cd kalz-omnisiute
+git checkout main
+```
+
+Untuk deployment reproducible, checkout tag atau commit tertentu, bukan branch bergerak.
+
+### 3. Buat virtual environment
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+```
+
+### 4. Instal dependency dasar
+
+```bash
+pip install -e .
+pip install pytest
+```
+
+Untuk GUI native:
+
+```bash
+pip install -e '.[ui]'
+```
+
+Untuk OpenAI Agent:
+
+```bash
+pip install openai openai-agents
+```
+
+OpenAI bersifat opsional. Core CLI, audit, planner, gateway, defense, dan observability lokal dapat digunakan tanpa API eksternal.
+
+### 5. Konfigurasi secret secara aman
+
+Jangan tulis token di source code, README, commit, issue, atau command history. Gunakan environment atau secret manager.
+
+```bash
+export OPENAI_API_KEY="TOKEN_BARU_YANG_SUDAH_DIROTASI"
+export OPENAI_MODEL="gpt-4.1-mini"
+export OPENAI_TIMEOUT="60"
+export OPENAI_MAX_RETRIES="2"
+```
+
+Token yang pernah ditempel di chat atau log harus dianggap kompromi dan segera di-rotate.
+
+### 6. Jalankan pemeriksaan dokter sistem
+
+```bash
+python -m kalz --doctor
+```
+
+Pemeriksaan ini digunakan untuk mendeteksi platform, desktop environment, capability dasar, dan konfigurasi runtime tanpa melakukan perubahan destruktif.
+
+### 7. Jalankan test suite
+
+```bash
+python -m compileall -q kalz tests scripts
+pytest -q
+```
+
+Test harus lulus sebelum menjalankan deployment `apply` atau memasang service systemd.
+
+### 8. Jalankan mode CLI
+
+```bash
+python -m kalz --plan curl git
+python -m kalz --registry
+python -m kalz --doctor
+```
+
+Mode plan hanya menghasilkan rencana. Ia tidak memasang paket atau mengubah konfigurasi host.
+
+### 9. Jalankan GUI native
+
+```bash
+python -m kalz --gui
+```
+
+GUI menggunakan PySide6/QML/QSS dan akan menampilkan ikon aplikasi Kalz pada window, taskbar, dan header dashboard.
+
+## Branding Icon GUI
+
+Semua GUI menggunakan ikon orisinal **Kalz symbiote-inspired** pada:
+
+- `QApplication.setWindowIcon()` di `kalz/app.py`;
+- `ApplicationWindow.icon` di `kalz/ui/qml/Main.qml`;
+- header dashboard QML;
+- aset sumber `kalz/ui/assets/kalz-venom-inspired.svg`.
+
+Ikon ini adalah simbol abstrak orisinal bergaya symbiote/venom-inspired dan bukan salinan logo atau aset resmi pihak ketiga.
+
+![Kalz application icon](kalz/ui/assets/kalz-venom-inspired.svg)
+
+## Deployment Otomatis
+
+Selalu mulai dengan plan:
+
+```bash
+./scripts/deploy.sh plan
+```
+
+Apply membutuhkan approval eksplisit:
+
+```bash
+export KALZ_ENV=staging
+export KALZ_RELEASE=main
+export KALZ_DEPLOY_APPROVED=true
+./scripts/deploy.sh apply
+```
+
+Verifikasi release aktif:
+
+```bash
+./scripts/deploy.sh verify
+```
+
+Rollback:
+
+```bash
+export KALZ_DEPLOY_APPROVED=true
+./scripts/deploy.sh rollback
+```
+
+Workflow CI/CD berada di [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Pull request menjalankan compile, secret scan, dan test. Tag release dapat masuk ke staging lalu production melalui environment approval GitHub.
+
+## Observability dan Analisis LLM
+
+Subsystem observability menyediakan metrics, structured logs, traces, alerts, export, dan retention. `LogAnalysisService` dapat mengirim konteks log yang sudah dibatasi dan di-redact ke OpenAI Agent. Output LLM bersifat advisory dan tidak dapat melewati policy atau menjalankan remediation privileged secara langsung.
+
+```bash
+python -m pytest tests/integration/test_observability.py tests/integration/test_gateway_defense_llm.py -q
+```
+
+## Struktur Utama
+
+| Direktori | Fungsi |
+|---|---|
+| `kalz/core` | runner, workflow, scheduler, orchestration, process lifecycle |
+| `kalz/automation` | distro/DE detection, automation engine, backup, reports |
+| `kalz/gateway` | API gateway dan distributed load balancing |
+| `kalz/defense` | automatic layered defense dan hardening controls |
+| `kalz/distributed` | partition, shuffle, workers, checkpoints, pipeline |
+| `kalz/ml` | features, models, training, inference, evaluation |
+| `kalz/observability` | metrics, logs, traces, alerts, exports, LLM analysis |
+| `kalz/securityx` | key management, AEAD, secure channel, access, rotation |
+| `kalz/ui` | PySide6/QML/QSS dan application icon |
+| `docs` | arsitektur, deployment, diagram, API contract, developer guide |
+| `scripts` | generator, repair, deployment, verification helpers |
+
+## Prinsip Operasi
 
 Semua perubahan sistem bersifat **preview-first** dan **consent-gated**. Operasi dijalankan melalui argv terstruktur tanpa shell interpolation, dicatat dalam audit hash-chain, dapat dihentikan melalui panic control, dan ketika gagal hanya melakukan abort, diagnosis, serta recovery plan. Tidak ada perilaku merusak atau penghapusan data otomatis.
-
-## Struktur
-
-Paket `kalz/automation` mengelola deteksi dan health workflows. `kalz/de_integration` berisi adapter per DE. `kalz/tools` menyimpan registry 200+ tool yang dikelompokkan ke security, system, devops, multimedia, office, disk, package, monitoring, backup, virtualization, dan kategori lain. `kalz/ui` adalah shell native PySide6/QML/QSS. `kalz/system` menampung service definitions, sedangkan `packaging` dan `scripts` memuat pipeline distribusi.
 
 ## Roadmap
 
@@ -25,10 +203,13 @@ Paket `kalz/automation` mengelola deteksi dan health workflows. `kalz/de_integra
 | v2.0 | plugin marketplace design, reproducible lab profiles |
 | v2.5 | digital twin workstation/lab model dan policy simulation |
 
-## Development
+## Lisensi dan Keamanan
 
-```bash
-python -m kalz --doctor
-python -m kalz --plan curl git
-pytest -q
-```
+Jangan menjalankan operasi privileged sebelum meninjau plan, scope, consent, dan target. Gunakan backup sebelum perubahan sistem. Laporkan security issue melalui kanal privat repository, bukan issue publik.
+
+## References
+
+[1]: https://docs.python.org/3/library/venv.html "Python virtual environments"
+[2]: https://docs.github.com/en/actions "GitHub Actions documentation"
+[3]: https://doc.qt.io/qtforpython/ "Qt for Python documentation"
+[4]: https://platform.openai.com/docs/ "OpenAI platform documentation"

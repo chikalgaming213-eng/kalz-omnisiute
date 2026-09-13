@@ -7,12 +7,17 @@ ApplicationWindow {
     width: 1280
     height: 760
     title: "Kalz OmniSuite"
+    icon: "../assets/kalz-venom-inspired.svg"
     color: "#0d1117"
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 24
         spacing: 16
-        Label { text: "KALZ OMNISUITE"; color: "#58a6ff"; font.pixelSize: 28; font.bold: true }
+        RowLayout {
+            Layout.fillWidth: true
+            Image { source: "../assets/kalz-venom-inspired.svg"; Layout.preferredWidth: 48; Layout.preferredHeight: 48; fillMode: Image.PreserveAspectFit }
+            Label { text: "KALZ OMNISUITE"; color: "#58a6ff"; font.pixelSize: 28; font.bold: true }
+        }
         Label { text: "Native Linux Operations Console · Safe / Audited / Dry-run"; color: "#8b949e" }
         RowLayout {
             Layout.fillWidth: true

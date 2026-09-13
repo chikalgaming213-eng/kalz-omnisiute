@@ -7,11 +7,13 @@ def run_gui() -> int:
     try:
         from PySide6.QtCore import QUrl
         from PySide6.QtQml import QQmlApplicationEngine
+        from PySide6.QtGui import QIcon
         from PySide6.QtWidgets import QApplication
     except ImportError:
         print('PySide6 is not installed; install kalz-omnisiute[ui]')
         return 2
     app = QApplication([])
+    app.setWindowIcon(QIcon(str(Path(__file__).parent / 'ui' / 'assets' / 'kalz-venom-inspired.svg')))
     engine = QQmlApplicationEngine()
     qml = Path(__file__).parent / 'ui' / 'qml' / 'Main.qml'
     engine.load(QUrl.fromLocalFile(str(qml)))
