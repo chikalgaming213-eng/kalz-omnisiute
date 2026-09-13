@@ -117,16 +117,17 @@ GUI menggunakan PySide6/QML/QSS dan akan menampilkan ikon aplikasi Kalz pada win
 
 ## Branding Icon GUI
 
-Semua GUI menggunakan ikon orisinal **Kalz symbiote-inspired** pada:
+Semua GUI sekarang menggunakan gambar branding Venom yang Anda berikan pada:
 
 - `QApplication.setWindowIcon()` di `kalz/app.py`;
 - `ApplicationWindow.icon` di `kalz/ui/qml/Main.qml`;
 - header dashboard QML;
-- aset sumber `kalz/ui/assets/kalz-venom-inspired.svg`.
+- aset utama `kalz/ui/assets/kalz-venom.png`;
+- varian ukuran Linux/Qt `kalz/ui/assets/kalz-venom-16.png` sampai `kalz/ui/assets/kalz-venom-512.png`.
 
-Ikon ini adalah simbol abstrak orisinal bergaya symbiote/venom-inspired dan bukan salinan logo atau aset resmi pihak ketiga.
+Gambar asli disimpan sebagai aset PNG dan dipakai tanpa menggambar ulang atau mengubah isi visualnya. Varian PNG dibuat hanya melalui downscaling deterministik untuk kebutuhan ukuran window, taskbar, dan header.
 
-![Kalz application icon](kalz/ui/assets/kalz-venom-inspired.svg)
+![Kalz application icon](kalz/ui/assets/kalz-venom.png)
 
 ## Deployment Otomatis
 
