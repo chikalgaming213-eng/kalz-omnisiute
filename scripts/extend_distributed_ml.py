@@ -1,0 +1,15 @@
+from pathlib import Path
+
+def add(path, base, names, block):
+ p=Path(path)
+ with p.open('a') as f:
+  for i,n in enumerate(names,5000): f.write(block.format(cls=n.title().replace('_',''),name=n,seq=i))
+
+def main():
+ names=[f'ml_extended_{i:03d}' for i in range(1,130)]
+ add('kalz/ml/features.py','FeatureTransform',names,'''\nclass {cls}Transform(FeatureTransform):\n    name={name!r}\n    sequence={seq}\n    def apply(self, values: dict[str,float]) -> dict[str,float]:\n        return {{key: value + self.sequence/100000 for key,value in values.items()}}\n    def validate(self, values: dict[str,float]) -> bool:\n        return super().validate(values) and len(values) <= 4096\n    def manifest(self) -> dict[str,Any]:\n        return {{"name":self.name,"sequence":self.sequence,"type":"distributed"}}\n''')
+ add('kalz/ml/models.py','ModelArchitecture',names,'''\nclass {cls}Model(ModelArchitecture):\n    name={name!r}\n    sequence={seq}\n    def build(self, input_size: int) -> tuple[int,...]:\n        return (input_size, 1 + self.sequence % 128, 1 + self.sequence % 32)\n    def predict(self, values: tuple[float,...], weights: tuple[float,...]) -> float:\n        return sum(values) / max(1,len(values)) + sum(weights) / max(1,len(weights))\n    def manifest(self) -> dict[str,Any]:\n        return {{"name":self.name,"sequence":self.sequence,"distributed":True}}\n''')
+ add('kalz/ml/training.py','Trainer',names,'''\nclass {cls}Trainer(Trainer):\n    name={name!r}\n    sequence={seq}\n    def step(self, weights: list[float], batch: TrainingBatch) -> list[float]:\n        base=super().step(weights,batch)\n        return [value + self.sequence/1000000 for value in base]\n    def schedule(self, epoch: int) -> float:\n        return self.learning_rate / (1 + epoch + self.sequence/1000)\n    def manifest(self) -> dict[str,Any]:\n        return {{"name":self.name,"sequence":self.sequence,"distributed":True}}\n''')
+ add('kalz/ml/inference.py','InferenceServer',names,'''\nclass {cls}Runtime(InferenceServer):\n    name={name!r}\n    sequence={seq}\n    batch_size=1 + {seq} % 64\n    def route(self, request: InferenceRequest) -> str:\n        return f"{{request.model}}:extended:{{self.sequence}}"\n    def validate(self, request: InferenceRequest) -> bool:\n        return super().health()["ready"] and bool(request.request_id and request.values)\n    def estimate(self, request: InferenceRequest) -> float:\n        return len(request.values) / max(1,self.batch_size)\n''')
+ add('kalz/ml/evaluation.py','Evaluator',names,'''\nclass {cls}Evaluator(Evaluator):\n    name={name!r}\n    sequence={seq}\n    threshold=0.1 + ({seq} % 30)/100\n    def score(self, predictions: Iterable[float], labels: Iterable[float]) -> EvaluationResult:\n        result=super().evaluate(predictions,labels)\n        return EvaluationResult(self.name,result.value,result.samples,result.value<=self.threshold,{{"sequence":self.sequence}})\n    def monitor(self, drift_value: float) -> bool:\n        return drift_value > self.threshold\n''')
+if __name__=='__main__': main()
