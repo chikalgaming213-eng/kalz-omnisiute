@@ -30,4 +30,5 @@ class APIHandler(BaseHTTPRequestHandler):
     def log_message(self, *_args) -> None: return
 
 def serve(host: str = '127.0.0.1', port: int = 8765) -> ThreadingHTTPServer:
+    """Create a local HTTP server for health, profile, and dry-run plan APIs."""
     return ThreadingHTTPServer((host, port), APIHandler)

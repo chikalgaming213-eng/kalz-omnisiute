@@ -19,5 +19,7 @@ def main() -> int:
     if a.registry: print(json.dumps(registry_report(), indent=2)); return 0
     if a.gui: return run_gui()
     if a.api:
+        from kalz.api.rest import APIHandler
+        APIHandler.profile_provider = lambda: {**detect_profile().to_dict(), 'distro': detect_distro(), 'desktop_detected': detect_de()}
         server = serve(); print('Kalz API listening on http://127.0.0.1:8765', flush=True); server.serve_forever()
     return 0
