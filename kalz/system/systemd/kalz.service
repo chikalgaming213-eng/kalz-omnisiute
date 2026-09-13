@@ -1,0 +1,13 @@
+[Unit]
+Description=Kalz OmniSuite headless API
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/kalz --api
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target
