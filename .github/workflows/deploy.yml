@@ -1,0 +1,101 @@
+name: Kalz OmniSuite Deployment
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kalz-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Compile and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pinned revision
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest
+      - name: Secret scan
+        run: '! git grep -n -E "sk-proj-|sk-[A-Za-z0-9]{20,}|BEGIN (RSA|OPENSSH|PRIVATE) KEY" -- .'
+      - name: Compile
+        run: python -m compileall -q kalz tests scripts
+      - name: Test
+        run: pytest -q
+      - name: Deployment plan
+        run: ./scripts/deploy.sh plan
+
+  package:
+    name: Build release manifest
+    needs: test
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Create manifest
+        run: |
+          mkdir -p dist
+          git rev-parse HEAD > dist/revision
+          find kalz -type f -name '*.py' -print0 | sort -z | xargs -0 sha256sum > dist/manifest.sha256
+          tar -czf dist/kalz-omnisiute-${GITHUB_SHA::12}.tar.gz kalz scripts docs pyproject.toml README.md
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kalz-release-${{ github.sha }}
+          path: dist/
+
+  staging:
+    name: Staging deployment gate
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment: staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Staging plan
+        run: ./scripts/deploy.sh plan
+      - name: Staging apply
+        env:
+          KALZ_ENV: staging
+          KALZ_RELEASE: ${{ github.sha }}
+          KALZ_DEPLOY_APPROVED: 'true'
+        run: ./scripts/deploy.sh apply
+
+  production:
+    name: Production deployment gate
+    needs: staging
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Production plan
+        run: ./scripts/deploy.sh plan
+      - name: Production apply
+        env:
+          KALZ_ENV: production
+          KALZ_RELEASE: ${{ github.sha }}
+          KALZ_DEPLOY_APPROVED: 'true'
+        run: ./scripts/deploy.sh apply

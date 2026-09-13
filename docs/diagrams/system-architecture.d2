@@ -1,0 +1,96 @@
+direction: down
+vars: {
+  accent: "#5eead4"
+  dark: "#0b1220"
+  blue: "#2563eb"
+  violet: "#7c3aed"
+  amber: "#f59e0b"
+  green: "#10b981"
+  red: "#ef4444"
+}
+
+presentation: {
+  label: "USER SURFACES"
+  shape: hexagon
+  style.fill: "#12233f"
+  style.stroke: "#5eead4"
+  style.font-color: "#e6fffb"
+  gui: "PySide6 + QML\nDesktop dashboard"
+  cli: "CLI + headless\noperations"
+  api: "REST + OpenAPI\nGateway edge"
+}
+
+control: {
+  label: "CONTROL PLANE"
+  shape: hexagon
+  style.fill: "#1e1b4b"
+  style.stroke: "#a78bfa"
+  style.font-color: "#f5f3ff"
+  workflow: "Workflow engine\nScheduler + Runner"
+  automation: "Automation engine\nPlan / Execute / Rollback"
+  policy: "Scope + Consent +\nAccess decisions"
+}
+
+intelligence: {
+  label: "INTELLIGENCE PLANE"
+  shape: hexagon
+  style.fill: "#172554"
+  style.stroke: "#60a5fa"
+  style.font-color: "#eff6ff"
+  ml: "Distributed ML\nFeatures / Training / Inference"
+  llm: "OpenAI Agent\nRedacted log analysis"
+  data: "Distributed data\nPartition / Shuffle / Workers"
+}
+
+observability: {
+  label: "OBSERVABILITY PLANE"
+  shape: hexagon
+  style.fill: "#052e2b"
+  style.stroke: "#34d399"
+  style.font-color: "#ecfdf5"
+  metrics: "Metrics\nReal-time samples"
+  logs: "Structured logs\nDistributed store"
+  traces: "Traces\nCorrelation IDs"
+  alerts: "Alerts + Export\nRetention / Sinks"
+}
+
+security: {
+  label: "SECURITY PLANE"
+  shape: hexagon
+  style.fill: "#3b1d12"
+  style.stroke: "#fbbf24"
+  style.font-color: "#fffbeb"
+  crypto: "Ed25519 / AES-GCM\nX25519 / HKDF"
+  defense: "Layered defense\nPanic + Hardening"
+  audit: "Hash-chain audit\nIntegrity records"
+}
+
+platform: {
+  label: "PLATFORM FOUNDATION"
+  shape: hexagon
+  style.fill: "#1f2937"
+  style.stroke: "#94a3b8"
+  style.font-color: "#f8fafc"
+  linux: "Linux distro + DE\nKDE / XFCE / GNOME"
+  persistence: "SQLite + backups\nCheckpoints"
+  packaging: "deb / rpm / flatpak\nAppImage / containers"
+}
+
+presentation.gui -> control.workflow: "events"
+presentation.cli -> control.automation: "commands"
+presentation.api -> control.policy: "validated requests"
+control.workflow -> intelligence.data: "jobs"
+control.automation -> intelligence.ml: "approved workloads"
+control.policy -> security.defense: "enforce"
+intelligence.data -> observability.metrics: "throughput"
+intelligence.ml -> observability.traces: "model spans"
+intelligence.llm -> observability.logs: "analysis context"
+observability.logs -> intelligence.llm: "redacted events"
+security.crypto -> security.audit: "signed records"
+security.defense -> observability.alerts: "incidents"
+control.workflow -> security.audit: "lifecycle"
+intelligence.data -> platform.persistence: "checkpoints"
+observability.alerts -> platform.persistence: "reports"
+security.audit -> platform.persistence: "append-only"
+platform.linux -> presentation.gui: "desktop adapter"
+platform.packaging -> control.workflow: "service runtime"
