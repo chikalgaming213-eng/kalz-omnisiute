@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
-echo "Kalz OmniSuite: build_rpm.sh placeholder pipeline"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PYTHONPATH="$ROOT" exec python "$ROOT/scripts/kalz_action.py" build-plan "$@"

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Callable
+from kalz.api.validation import APIInputError, validate_packages
 
 class APIHandler(BaseHTTPRequestHandler):
     profile_provider: Callable[[], dict] = lambda: {}
@@ -12,9 +13,16 @@ class APIHandler(BaseHTTPRequestHandler):
         else: self._json({'error': 'not found'}, 404)
     def do_POST(self) -> None:
         if self.path == '/api/v1/plan':
-            size = int(self.headers.get('Content-Length', '0'))
-            body = json.loads(self.rfile.read(size) or b'{}')
-            self._json({'accepted': False, 'dry_run': True, 'packages': body.get('packages', []), 'message': 'review plan before execution'})
+            try:
+                size = int(self.headers.get('Content-Length', '0'))
+                if size > 10240:
+                    raise APIInputError('request body too large')
+                body = json.loads(self.rfile.read(size) or b'{}')
+                packages = validate_packages(body.get('packages'))
+            except (ValueError, json.JSONDecodeError) as error:
+                self._json({'error': str(error)}, 400)
+                return
+            self._json({'accepted': False, 'dry_run': True, 'packages': packages, 'message': 'review plan before execution'})
         else: self._json({'error': 'not found'}, 404)
     def _json(self, payload: dict, status: int = 200) -> None:
         data = json.dumps(payload).encode()
