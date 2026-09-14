@@ -15,6 +15,7 @@ class ToolSpec:
 _RAW = {
 "security": "nmap masscan nikto nuclei zap sqlmap gobuster ffuf wpscan hydra john hashcat aircrack-ng kismet tcpdump tshark wireshark mitmproxy metasploit searchsploit lynis sslscan sslyze testssl testdisk autopsy volatility binwalk foremost sleuthkit ghidra radare2 rizin gdb objdump strings openssl gpg trivy kube-bench kube-hunter adb frida apktool jadx",
 "network": "curl wget httpie netcat ncat socat scapy hping3 arping ettercap bettercap dsniff macchanger iodine mtr traceroute iperf3 nmap bind9-dnsutils whois dnsrecon dnsenum fierce amass subfinder assetfinder httpx dnsx naabu theharvester recon-ng",
+"osint": "sherlock maigret ghunt phoneinfoga amass subfinder theharvester spiderfoot recon-ng bbot photon crawl4ai firecrawl misp opencti",
 "web": "dirb wfuzz commix xsstrike dalfox arjun paramspider kiterunner feroxbuster whatweb wafw00f cmseek graphql-cop joomscan droopescan wapiti arachni skipfish w3af cadaver davtest nikto webshell-detector",
 "devops": "docker podman kubectl helm minikube terraform ansible packer vagrant git git-lfs gh jq yq tmux screen rsync ssh scp rclone make cmake ninja bazel",
 "sysadmin": "htop btop iotop iftop nload ncdu lsof strace ltrace sysstat procps psmisc util-linux coreutils findutils grep sed gawk ripgrep fd fzf tree eza bat man-db",

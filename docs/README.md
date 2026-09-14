@@ -10,6 +10,7 @@ Dokumentasi ini menjadi pintu masuk untuk memahami arsitektur dan mengoperasikan
 | [D2 Source](diagrams/system-architecture.d2) | Source diagram yang dapat diedit |
 | [Developer Guide](developer-guide.md) | Konvensi runtime dan lapisan pengembangan |
 | [OpenAPI](openapi.json) | Contract endpoint REST |
+| [OSINT Catalog](osint.md) | Sources, plan-only adapters, scope, consent, and GUI coverage |
 
 ## Operational Entry Points
 

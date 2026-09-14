@@ -107,9 +107,10 @@ Test harus lulus sebelum menjalankan deployment `apply` atau memasang service sy
 python -m kalz --plan curl git
 python -m kalz --registry
 python -m kalz --doctor
+python -m kalz --osint
 ```
 
-Mode plan hanya menghasilkan rencana. Ia tidak memasang paket atau mengubah konfigurasi host.
+Mode plan hanya menghasilkan rencana. Ia tidak memasang paket atau mengubah konfigurasi host. Lihat [OSINT Catalog](docs/osint.md) untuk sumber, kategori, scope, consent, dan batasan plan-only.
 
 ### 9. Jalankan GUI native
 
@@ -196,6 +197,7 @@ python -m pytest tests/integration/test_observability.py tests/integration/test_
 | `kalz/distributed` | partition, shuffle, workers, checkpoints, pipeline |
 | `kalz/ml` | features, models, training, inference, evaluation |
 | `kalz/observability` | metrics, logs, traces, alerts, exports, LLM analysis |
+| `kalz/osint` | OSINT catalog, repository metadata, scope-safe plan-only adapters |
 | `kalz/securityx` | key management, AEAD, secure channel, access, rotation |
 | `kalz/ui` | PySide6/QML/QSS dan application icon |
 | `docs` | arsitektur, deployment, diagram, API contract, developer guide |

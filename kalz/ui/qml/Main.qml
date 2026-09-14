@@ -23,7 +23,7 @@ ApplicationWindow {
         RowLayout {
             Layout.fillWidth: true
             Repeater {
-                model: ["System Health", "Tool Registry", "Automation", "Audit Chain"]
+                model: ["System Health", "Tool Registry", "OSINT Catalog", "Automation", "Audit Chain"]
                 delegate: Rectangle { Layout.fillWidth: true; height: 130; radius: 12; color: "#161b22"; border.color: "#30363d"; Text { anchors.centerIn: parent; text: modelData; color: "#f0f6fc"; font.pixelSize: 18 } }
             }
         }
