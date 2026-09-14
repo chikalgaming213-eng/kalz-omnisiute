@@ -19,6 +19,7 @@ ApplicationWindow {
             Label { text: "KALZ OMNISUITE"; color: "#58a6ff"; font.pixelSize: 28; font.bold: true }
         }
         Label { text: "Native Linux Operations Console · Safe / Audited / Dry-run"; color: "#8b949e" }
+        Rectangle { Layout.fillWidth: true; height: 54; radius: 10; color: "#101827"; border.color: "#1f6f78"; Text { anchors.centerIn: parent; text: dashboardBridge.status; color: "#9ff5e8"; font.pixelSize: 14 } }
         RowLayout {
             Layout.fillWidth: true
             Repeater {

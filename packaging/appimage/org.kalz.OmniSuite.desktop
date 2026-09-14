@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Kalz OmniSuite
+Comment=Safe auditable native Linux operations suite
+Exec=kalz-omnisiute --gui
+Icon=kalz-venom
+Categories=System;Utility;Development;
+Terminal=false
+StartupNotify=true

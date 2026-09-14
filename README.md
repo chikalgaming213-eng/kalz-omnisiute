@@ -38,6 +38,10 @@ git checkout main
 
 Untuk deployment reproducible, checkout tag atau commit tertentu, bukan branch bergerak.
 
+## Mode Pengembangan Pilihan 1–4
+
+Repository ini menyediakan empat jalur pengembangan yang saling terhubung. Blueprint inti berada pada workflow, automation, distributed data, ML, security, dan plugin contracts. GUI native memakai `DashboardService` read-only untuk menampilkan status platform, gateway, logs, metrics, dan defense tanpa memberi GUI hak istimewa tambahan. Deployment dan packaging menyediakan manifest Debian, RPM, AppImage, Flatpak, dan Snap. Observability, gateway, load balancing, OpenAI log analysis, dan layered defense bekerja sebagai control planes terpisah yang dapat diverifikasi melalui test suite.
+
 ### 3. Buat virtual environment
 
 ```bash
@@ -160,6 +164,18 @@ export KALZ_DEPLOY_APPROVED=true
 ```
 
 Workflow CI/CD berada di [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Pull request menjalankan compile, secret scan, dan test. Tag release dapat masuk ke staging lalu production melalui environment approval GitHub.
+
+Native packaging manifests tersedia di:
+
+| Format | Manifest |
+|---|---|
+| Debian | `packaging/debian/control` |
+| RPM | `packaging/rpm/kalz-omnisiute.spec` |
+| AppImage | `packaging/appimage/AppRun` dan desktop entry |
+| Flatpak | `packaging/flatpak/org.kalz.OmniSuite.yml` |
+| Snap | `packaging/snap/snapcraft.yaml` |
+
+Semua launcher GUI mengarah ke branding icon Kalz yang sama sehingga identitas window, taskbar, desktop entry, dan dashboard konsisten.
 
 ## Observability dan Analisis LLM
 

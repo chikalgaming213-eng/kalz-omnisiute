@@ -1,0 +1,20 @@
+name: kalz-omnisiute
+base: core22
+version: '0.1.0'
+summary: Safe auditable native Linux operations suite
+description: |
+  Kalz OmniSuite is a preview-first, consent-gated Linux operations suite
+  with observability, distributed processing, gateway routing, and defense.
+grade: stable
+confinement: strict
+apps:
+  kalz-omnisiute:
+    command: bin/kalz
+    desktop: usr/share/applications/org.kalz.OmniSuite.desktop
+    plugs: [home, network, removable-media]
+parts:
+  kalz:
+    plugin: python
+    source: ../..
+    build-packages: [python3-dev]
+    stage-packages: [python3]

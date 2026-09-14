@@ -5,7 +5,7 @@ from pathlib import Path
 
 def run_gui() -> int:
     try:
-        from PySide6.QtCore import QUrl
+        from PySide6.QtCore import QUrl, QObject, Property, Signal
         from PySide6.QtQml import QQmlApplicationEngine
         from PySide6.QtGui import QIcon
         from PySide6.QtWidgets import QApplication
@@ -15,6 +15,21 @@ def run_gui() -> int:
     app = QApplication([])
     app.setWindowIcon(QIcon(str(Path(__file__).parent / 'ui' / 'assets' / 'kalz-venom.png')))
     engine = QQmlApplicationEngine()
+    from kalz.ui.dashboard import DashboardService
+
+    class DashboardBridge(QObject):
+        changed = Signal()
+
+        def __init__(self) -> None:
+            super().__init__()
+            self.service = DashboardService()
+
+        @Property(str, notify=changed)
+        def status(self) -> str:
+            return self.service.status_text()
+
+    bridge = DashboardBridge()
+    engine.rootContext().setContextProperty("dashboardBridge", bridge)
     qml = Path(__file__).parent / 'ui' / 'qml' / 'Main.qml'
     engine.load(QUrl.fromLocalFile(str(qml)))
     if not engine.rootObjects(): return 1

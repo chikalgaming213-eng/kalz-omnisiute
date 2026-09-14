@@ -1,0 +1,11 @@
+Package: kalz-omnisiute
+Section: admin
+Priority: optional
+Architecture: all
+Depends: python3 (>= 3.11), python3-venv
+Recommends: python3-pyside6
+Maintainer: Kalz OmniSuite Maintainers
+Description: Safe, auditable native Linux operations suite
+ Kalz OmniSuite provides headless and native GUI workflows for inventory,
+ automation planning, observability, distributed processing, and defense.
+ Operations are preview-first and consent-gated.
