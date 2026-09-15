@@ -142,6 +142,22 @@ export KALZ_BOOTSTRAP_APPROVED=true
 source .venv/bin/activate
 ```
 
+Alternatif yang setara melalui Makefile:
+
+```bash
+make bootstrap
+make install
+make verify
+```
+
+Setelah instalasi editable berhasil, console entrypoint `kalz` juga tersedia:
+
+```bash
+kalz --doctor
+kalz --registry
+kalz --osint
+```
+
 Bootstrap melakukan:
 
 1. Memastikan Python 3.11+.
@@ -247,6 +263,8 @@ Atau gunakan quality gate terpadu yang dipakai CI:
 ```
 
 Verifier memeriksa file wajib, secret-like material, seluruh shell script, compile, import  runtime modules, doctor, OSINT catalog count, dan test suite. Ia bersifat read-only terhadap host.
+
+Target `make verify` menjalankan verifier yang sama. Target `make package-plan` hanya menampilkan rencana packaging dan tidak membuat package release secara diam-diam.
 
 Import audit seluruh module:
 

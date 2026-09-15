@@ -30,7 +30,7 @@ def import_audit() -> int:
 
 def check_files() -> None:
     required = [
-        "README.md", "pyproject.toml", "scripts/bootstrap.sh", "scripts/deploy.sh",
+        "README.md", "Makefile", "pyproject.toml", "scripts/bootstrap.sh", "scripts/deploy.sh",
         "docs/architecture.md", "docs/deployment.md", "docs/osint.md",
         "kalz/ui/assets/kalz-venom.png", "packaging/flatpak/org.kalz.OmniSuite.yml",
         "packaging/snap/snapcraft.yaml", "packaging/debian/control",
