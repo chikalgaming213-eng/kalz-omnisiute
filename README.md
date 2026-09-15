@@ -418,6 +418,8 @@ print(plan.to_dict())
 
 Planner hanya membuat rencana. Ia menolak target lokal, private, file, dan Unix socket. Tool tidak dijalankan otomatis. Lihat [docs/osint.md](docs/osint.md).
 
+Panduan instalasi lengkap untuk seluruh 19 entry, termasuk metode `pipx`, Go, source, Docker, Compose, kebutuhan API key, verifikasi binary, dan troubleshooting tersedia pada [OSINT Installation Matrix](docs/osint.md#installation-matrix). Repository OSINT tidak dipasang otomatis oleh Kalz.
+
 ---
 
 ## Observability dan LLM Analysis

@@ -23,8 +23,8 @@ _ENTRIES = (
     ("awesome_osint", "curated", "NCols/awesome_osint"),
     ("Sherlock", "identity", "sherlock-project/sherlock"),
     ("Maigret", "identity", "soxoj/maigret"),
-    ("GHunt", "identity", "BishopFox/GHunt"),
-    ("PhoneInfoga", "identity", "maigret/PhoneInfoga"),
+    ("GHunt", "identity", "mxrch/GHunt"),
+    ("PhoneInfoga", "identity", "sundowndev/phoneinfoga"),
     ("OWASP Amass", "domain-ip-recon", "OWASP/Amass"),
     ("Subfinder", "domain-ip-recon", "projectdiscovery/subfinder"),
     ("theHarvester", "domain-ip-recon", "laramies/theHarvester"),
@@ -36,7 +36,7 @@ _ENTRIES = (
     ("Firecrawl", "web-crawling", "firecrawl/firecrawl"),
     ("MISP", "threat-intelligence", "MISP/MISP"),
     ("OpenCTI", "threat-intelligence", "OpenCTI-Platform/opencti"),
-    ("Awesome Threat Intelligence", "threat-intelligence", "awesome-threat-intelligence/awesome-threat-intelligence"),
+    ("Awesome Threat Intelligence", "threat-intelligence", "hslatman/awesome-threat-intelligence"),
 )
 
 
