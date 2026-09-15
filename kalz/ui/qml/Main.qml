@@ -7,7 +7,6 @@ ApplicationWindow {
     width: 1280
     height: 760
     title: "Kalz OmniSuite"
-    icon: "../assets/kalz-venom.png"
     color: "#0d1117"
     ColumnLayout {
         anchors.fill: parent
