@@ -240,6 +240,14 @@ git diff --check
 bash -n scripts/*.sh
 ```
 
+Atau gunakan quality gate terpadu yang dipakai CI:
+
+```bash
+./scripts/verify.sh
+```
+
+Verifier memeriksa file wajib, secret-like material, seluruh shell script, compile, import  runtime modules, doctor, OSINT catalog count, dan test suite. Ia bersifat read-only terhadap host.
+
 Import audit seluruh module:
 
 ```bash
